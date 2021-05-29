@@ -1,0 +1,153 @@
+package fr.main.sacADos;
+
+import fr.main.sacADos.methode.*;
+import fr.main.util.GestionFichier;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+
+ */
+public class SacADos implements Iterable<Objet> {
+    /**
+     * Poids maximal que peut supporter le sac
+     */
+    private final double poidsMax;
+    /**
+     * Poids actuel du sac
+     */
+    private double poids;
+    /**
+     * Liste des objets à mettre dans le sac
+     */
+    private ArrayList<Objet> objetsPossibles = new ArrayList<>();
+    /**
+     * Permet de résoudre le sac avec l'algorithme glouton
+     */
+    private ArrayList<Objet> objDansLeSac = new ArrayList<>();
+
+    /**
+     * Constructeur pour instancier un sac vide
+     */
+    public SacADos() {
+        this.poidsMax = this.poids = 0.0;
+    }
+
+    /**
+     * Constructeur pour instancier un sac à dos avec une liste d'objets
+     
+    public SacADos(String chemin, Double poidsMax) throws IOException {
+        this.poids = 0.0;
+        this.poidsMax = poidsMax;
+        this.objetsPossibles = GestionFichier.lireListeObj(chemin);
+    }
+
+    
+    public long resoudre(Methodes METHODE) {
+        Resolution methodeRes = null;
+        switch(METHODE) {
+            case GLOUTONNE:
+                methodeRes = new ResolutionGloutonne(this);
+                break;
+            case DYNAMIQUE:
+                methodeRes = new ResolutionDynamique(this);
+                break;
+            case PSE:
+                methodeRes = new ResolutionPse(this);
+                break;
+            default:
+                //gestion methode non implémentée
+        }
+        long debut = System.currentTimeMillis();
+        methodeRes.resoudre();
+        return System.currentTimeMillis() - debut;
+    }
+
+    /**
+     * Permet de vider tout les objets dans le sac
+     /
+    public void vider() {
+        this.poids = 0.0;
+        this.objDansLeSac.clear();
+    }
+
+    /**
+     * Permet d'ajouter un objet dans le sac s'il y a assez de place
+     */
+    public void ajouter(Objet objet) {
+        if(objet.getPoids() + this.poids <= this.poidsMax) {
+            this.objDansLeSac.add(objet);
+            this.poids += objet.getPoids();
+        }
+    }
+
+    /**
+     * Renvoie le poids maximal autorisé
+     *
+     * @return double poidMax
+     */
+    public double getPoidsMax() {
+        return this.poidsMax;
+    }
+
+    /**
+     * Renvoie le poids actuel du sac
+     * Celui-ci correspond à la somme du poids de tous les objets contenus dans le sac
+     *
+     * @return double poids
+     */
+    public double getPoids() {
+        return this.poids;
+    }
+
+    /**
+     * Renvoie la valeur actuelle du sac
+     *
+     * @return double valeur
+     */
+    public double getValeur() {
+        double valeur = 0;
+        for(Objet o : this) {
+            valeur += o.getValeur();
+        }
+        return valeur;
+    }
+
+    /**
+     * Renvoie la valeur actuelle du sac
+     *
+     * @return double valeur
+     */
+    public ArrayList<Objet> getObjetsPossibles() {
+        return this.objetsPossibles;
+    }
+
+    
+    @Override
+    public Iterator<Objet> iterator() {
+        return this.objDansLeSac.iterator();
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("Sac à dos\n");
+        sb.append("-Valeur totale: ")
+                .append(getValeur())
+                .append("\n");
+        sb.append("-Poids total: ")
+                .append(this.poids)
+                .append(" (")
+                .append(String.format("%,.2f", 100 * this.poids / this.poidsMax))
+                .append("%)\n");
+        sb.append("-Poids Maximal: ")
+                .append(this.poidsMax)
+                .append("\n");
+        sb.append("-Objets:\n");
+        for (Objet objet : this.objDansLeSac) {
+            sb.append("  >").append(objet).append("\n");
+        }
+        return sb.toString();
+    }
+}
